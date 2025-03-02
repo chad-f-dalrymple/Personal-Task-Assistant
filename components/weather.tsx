@@ -4,42 +4,151 @@ import cx from 'classnames';
 import { format, isWithinInterval } from 'date-fns';
 import { useEffect, useState } from 'react';
 
-interface WeatherAtLocation {
-  latitude: number;
-  longitude: number;
-  generationtime_ms: number;
-  utc_offset_seconds: number;
-  timezone: string;
-  timezone_abbreviation: string;
-  elevation: number;
-  current_units: {
-    time: string;
-    interval: string;
-    temperature_2m: string;
-  };
-  current: {
-    time: string;
-    interval: number;
-    temperature_2m: number;
-  };
-  hourly_units: {
-    time: string;
-    temperature_2m: string;
-  };
-  hourly: {
-    time: string[];
-    temperature_2m: number[];
-  };
-  daily_units: {
-    time: string;
-    sunrise: string;
-    sunset: string;
-  };
-  daily: {
-    time: string[];
-    sunrise: string[];
-    sunset: string[];
-  };
+// Condition type used in multiple places
+interface Condition {
+  text: string;
+  icon: string;
+  code: number;
+}
+
+// Location data
+interface Location {
+  name: string;
+  region: string;
+  country: string;
+  lat: number;
+  lon: number;
+  tz_id: string;
+  localtime_epoch: number;
+  localtime: string;
+}
+
+// Current weather data
+interface Current {
+  last_updated_epoch: number;
+  last_updated: string;
+  temp_c: number;
+  temp_f: number;
+  is_day: number;
+  condition: Condition;
+  wind_mph: number;
+  wind_kph: number;
+  wind_degree: number;
+  wind_dir: string;
+  pressure_mb: number;
+  pressure_in: number;
+  precip_mm: number;
+  precip_in: number;
+  humidity: number;
+  cloud: number;
+  feelslike_c: number;
+  feelslike_f: number;
+  windchill_c: number;
+  windchill_f: number;
+  heatindex_c: number;
+  heatindex_f: number;
+  dewpoint_c: number;
+  dewpoint_f: number;
+  vis_km: number;
+  vis_miles: number;
+  uv: number;
+  gust_mph: number;
+  gust_kph: number;
+}
+
+// Hour forecast data
+interface Hour {
+  time_epoch: number;
+  time: string;
+  temp_c: number;
+  temp_f: number;
+  is_day: number;
+  condition: Condition;
+  wind_mph: number;
+  wind_kph: number;
+  wind_degree: number;
+  wind_dir: string;
+  pressure_mb: number;
+  pressure_in: number;
+  precip_mm: number;
+  precip_in: number;
+  snow_cm: number;
+  humidity: number;
+  cloud: number;
+  feelslike_c: number;
+  feelslike_f: number;
+  windchill_c: number;
+  windchill_f: number;
+  heatindex_c: number;
+  heatindex_f: number;
+  dewpoint_c: number;
+  dewpoint_f: number;
+  will_it_rain: number;
+  chance_of_rain: number;
+  will_it_snow: number;
+  chance_of_snow: number;
+  vis_km: number;
+  vis_miles: number;
+  gust_mph: number;
+  gust_kph: number;
+  uv: number;
+}
+
+// Day forecast data
+interface Day {
+  maxtemp_c: number;
+  maxtemp_f: number;
+  mintemp_c: number;
+  mintemp_f: number;
+  avgtemp_c: number;
+  avgtemp_f: number;
+  maxwind_mph: number;
+  maxwind_kph: number;
+  totalprecip_mm: number;
+  totalprecip_in: number;
+  totalsnow_cm: number;
+  avgvis_km: number;
+  avgvis_miles: number;
+  avghumidity: number;
+  daily_will_it_rain: number;
+  daily_chance_of_rain: number;
+  daily_will_it_snow: number;
+  daily_chance_of_snow: number;
+  condition: Condition;
+  uv: number;
+}
+
+// Astronomy data
+interface Astro {
+  sunrise: string;
+  sunset: string;
+  moonrise: string;
+  moonset: string;
+  moon_phase: string;
+  moon_illumination: number;
+  is_moon_up: number;
+  is_sun_up: number;
+}
+
+// Forecast day data
+interface ForecastDay {
+  date: string;
+  date_epoch: number;
+  day: Day;
+  astro: Astro;
+  hour: Hour[];
+}
+
+// Forecast data
+interface Forecast {
+  forecastday: ForecastDay[];
+}
+
+// Complete WeatherAPI response
+interface WeatherApiResponse {
+  location: Location;
+  current: Current;
+  forecast?: Forecast;
 }
 
 const SAMPLE = {
@@ -202,21 +311,20 @@ function n(num: number): number {
 }
 
 export function Weather({
-  weatherAtLocation = SAMPLE,
+  weatherAtLocation,
 }: {
-  weatherAtLocation?: WeatherAtLocation;
+  weatherAtLocation?: WeatherApiResponse;
 }) {
-  const currentHigh = Math.max(
-    ...weatherAtLocation.hourly.temperature_2m.slice(0, 24),
-  );
-  const currentLow = Math.min(
-    ...weatherAtLocation.hourly.temperature_2m.slice(0, 24),
-  );
-
-  const isDay = isWithinInterval(new Date(weatherAtLocation.current.time), {
-    start: new Date(weatherAtLocation.daily.sunrise[0]),
-    end: new Date(weatherAtLocation.daily.sunset[0]),
-  });
+  // const currentHigh = weatherAtLocation?.current.temp_f;
+  // const dailyHigh = weatherAtLocation?.forecast?.forecastday?.day?.maxtemp_f;
+  // const dailyLow = weatherAtLocation?.forecast?.forecastday?.day?.mintemp_f
+  //@ts-ignore
+  // const isDay = isWithinInterval(new Date(weatherAtLocation.location.localtime), {
+  //   //@ts-ignore
+  //   start: new Date(parseInt(weatherAtLocation?.forecast?.forecastday?.astro.sunrise)),
+  //   //@ts-ignore
+  //   end: new Date(parseInt(weatherAtLocation?.forecast?.forecastday?.astro.sunset)),
+  // });
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -224,7 +332,6 @@ export function Weather({
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
-
     handleResize();
     window.addEventListener('resize', handleResize);
 
@@ -234,74 +341,67 @@ export function Weather({
   const hoursToShow = isMobile ? 5 : 6;
 
   // Find the index of the current time or the next closest time
-  const currentTimeIndex = weatherAtLocation.hourly.time.findIndex(
-    (time) => new Date(time) >= new Date(weatherAtLocation.current.time),
-  );
+  // const currentTimeIndex = weatherAtLocation?.location.localtime
 
   // Slice the arrays to get the desired number of items
-  const displayTimes = weatherAtLocation.hourly.time.slice(
-    currentTimeIndex,
-    currentTimeIndex + hoursToShow,
-  );
-  const displayTemperatures = weatherAtLocation.hourly.temperature_2m.slice(
-    currentTimeIndex,
-    currentTimeIndex + hoursToShow,
-  );
+  // const displayTimes: any = weatherAtLocation?.forecast ? weatherAtLocation?.forecast?.forecastday.hour.time_epoch : '';
+  // const displayTemperatures: any = weatherAtLocation?.forecast ? weatherAtLocation?.forecast?.forecastday.hour.temp_f : '';
+
+
+    // Find the index of the current time or the next closest time
+    // const currentTimeIndex = weatherAtLocation.hourly.time.findIndex(
+    //   (time) => new Date(time) >= new Date(weatherAtLocation.current.time),
+    // );
+  
+    // // Slice the arrays to get the desired number of items
+    // const displayTimes = weatherAtLocation.hourly.time.slice(
+    //   currentTimeIndex,
+    //   currentTimeIndex + hoursToShow,
+    // );
+    // const displayTemperatures = weatherAtLocation.hourly.temperature_2m.slice(
+    //   currentTimeIndex,
+    //   currentTimeIndex + hoursToShow,
+    // );
 
   return (
     <div
       className={cx(
-        'flex flex-col gap-4 rounded-2xl p-4 skeleton-bg max-w-[500px]',
-        {
-          'bg-blue-400': isDay,
-        },
-        {
-          'bg-indigo-900': !isDay,
-        },
+        'flex flex-col gap-4 rounded-2xl p-4 skeleton-bg max-w-[500px] bg-blue-400'
       )}
     >
       <div className="flex flex-row justify-between items-center">
-        <div className="flex flex-row gap-2 items-center">
+        {!weatherAtLocation?.forecast && <div className="flex flex-row gap-2 items-center">
           <div
             className={cx(
-              'size-10 rounded-full skeleton-div',
-              {
-                'bg-yellow-300': isDay,
-              },
-              {
-                'bg-indigo-100': !isDay,
-              },
+              'size-10 rounded-full skeleton-div bg-yellow-300'
             )}
           />
           <div className="text-4xl font-medium text-blue-50">
-            {n(weatherAtLocation.current.temperature_2m)}
-            {weatherAtLocation.current_units.temperature_2m}
+            {weatherAtLocation?.current.temp_f}
           </div>
         </div>
-
-        <div className="text-blue-50">{`H:${n(currentHigh)}° L:${n(currentLow)}°`}</div>
+        }
+        
+        {weatherAtLocation?.forecast && 
+        <div className="text-blue-50">{`Current temp: ${weatherAtLocation?.current.temp_f}`}</div>}
       </div>
-
+        
       <div className="flex flex-row justify-between">
-        {displayTimes.map((time, index) => (
-          <div key={time} className="flex flex-col items-center gap-1">
+        {weatherAtLocation?.forecast?.forecastday.map((item: any, index: any) => (
+          <div key={item.date} className="flex flex-col items-center gap-1">
             <div className="text-blue-100 text-xs">
-              {format(new Date(time), 'ha')}
+              {new Date(item.date).toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric' 
+              })}
             </div>
             <div
               className={cx(
-                'size-6 rounded-full skeleton-div',
-                {
-                  'bg-yellow-300': isDay,
-                },
-                {
-                  'bg-indigo-200': !isDay,
-                },
+                'size-6 rounded-full skeleton-div bg-yellow-300'
               )}
             />
             <div className="text-blue-50 text-sm">
-              {n(displayTemperatures[index])}
-              {weatherAtLocation.hourly_units.temperature_2m}
+              {`H: ${Math.round(item.day.maxtemp_f)} L: ${Math.round(item.day.mintemp_f)}`}
             </div>
           </div>
         ))}

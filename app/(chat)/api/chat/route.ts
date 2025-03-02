@@ -40,7 +40,8 @@ type AllowedTools =
   | 'createDocument'
   | 'updateDocument'
   | 'requestSuggestions'
-  | 'getWeather';
+  | 'getWeather'
+  | 'getForecast';
 
 const blocksTools: AllowedTools[] = [
   'createDocument',
@@ -48,7 +49,7 @@ const blocksTools: AllowedTools[] = [
   'requestSuggestions',
 ];
 
-const weatherTools: AllowedTools[] = ['getWeather'];
+const weatherTools: AllowedTools[] = ['getWeather', 'getForecast'];
 
 const allTools: AllowedTools[] = [...blocksTools, ...weatherTools];
 
@@ -111,14 +112,30 @@ export async function POST(request: Request) {
           getWeather: {
             description: 'Get the current weather at a location',
             parameters: z.object({
-              latitude: z.number(),
-              longitude: z.number(),
+              location: z.string()
             }),
-            execute: async ({ latitude, longitude }) => {
+            execute: async ({ location }) => {
+              const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
+              const apiKey = process.env.WEATHER_API_KEY
               const response = await fetch(
-                `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m&hourly=temperature_2m&daily=sunrise,sunset&timezone=auto`,
+                `${baseUrl}/current.json?key=${apiKey}&q=${encodeURI(location)}&aqi=no`,
               );
-
+              const weatherData = await response.json();
+              return weatherData;
+            },
+          },
+          getForecast: {
+            description: 'Get the extended forecast at a location',
+            parameters: z.object({
+              location: z.string(),
+              days: z.number()
+            }),
+            execute: async ({ location, days }) => {
+              const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
+              const apiKey = process.env.WEATHER_API_KEY
+              const response = await fetch(
+                `${baseUrl}/forecast.json?key=${apiKey}&q=${encodeURI(location)}&days=${days}&aqi=no&alerts=no`,
+              );
               const weatherData = await response.json();
               return weatherData;
             },

@@ -343,7 +343,6 @@ export function Weather({
   // Find the index of the current time or the next closest time
   // const currentTimeIndex = weatherAtLocation?.location.localtime
 
-  // Slice the arrays to get the desired number of items
   // const displayTimes: any = weatherAtLocation?.forecast ? weatherAtLocation?.forecast?.forecastday.hour.time_epoch : '';
   // const displayTemperatures: any = weatherAtLocation?.forecast ? weatherAtLocation?.forecast?.forecastday.hour.temp_f : '';
 

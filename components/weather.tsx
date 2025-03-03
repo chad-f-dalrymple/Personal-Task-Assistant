@@ -376,7 +376,7 @@ export function Weather({
             )}
           />
           <div className="text-4xl font-medium text-blue-50">
-            {weatherAtLocation?.current.temp_f}
+            {weatherAtLocation?.current.temp_f}&deg;F
           </div>
         </div>
         }
@@ -400,7 +400,7 @@ export function Weather({
               )}
             />
             <div className="text-blue-50 text-sm">
-              {`H: ${Math.round(item.day.maxtemp_f)} L: ${Math.round(item.day.mintemp_f)}`}
+              {`H: ${Math.round(item.day.maxtemp_f)}&deg;F L: ${Math.round(item.day.mintemp_f)}&deg;F`}
             </div>
           </div>
         ))}

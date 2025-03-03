@@ -1,61 +1,141 @@
-<a href="https://chat.vercel.ai/">
-  <img alt="Next.js 14 and App Router-ready AI chatbot." src="app/(chat)/opengraph-image.png">
-  <h1 align="center">Next.js AI Chatbot</h1>
-</a>
+# Next.js AI Chatbot
 
-<p align="center">
-  An Open-Source AI Chatbot Template Built With Next.js and the AI SDK by Vercel.
-</p>
+A modern AI chatbot built with Next.js, Vercel AI SDK, and Google's Gemini models. This project allows users to chat with an AI assistant through a clean, responsive interface.
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#model-providers"><strong>Model Providers</strong></a> ·
-  <a href="#deploy-your-own"><strong>Deploy Your Own</strong></a> ·
-  <a href="#running-locally"><strong>Running locally</strong></a>
-</p>
-<br/>
+![AI Chatbot Demo](https://placehold.co/600x400?text=AI+Chatbot+Demo)
+
+## Live Demo
+
+Check out the live demo: [Next.js AI Chatbot](https://nextjs-ai-chatbot-2.vercel.app/)
 
 ## Features
 
-- [Next.js](https://nextjs.org) App Router
-  - Advanced routing for seamless navigation and performance
-  - React Server Components (RSCs) and Server Actions for server-side rendering and increased performance
-- [AI SDK](https://sdk.vercel.ai/docs)
-  - Unified API for generating text, structured objects, and tool calls with LLMs
-  - Hooks for building dynamic chat and generative user interfaces
-  - Supports OpenAI (default), Anthropic, Cohere, and other model providers
-- [shadcn/ui](https://ui.shadcn.com)
-  - Styling with [Tailwind CSS](https://tailwindcss.com)
-  - Component primitives from [Radix UI](https://radix-ui.com) for accessibility and flexibility
-- Data Persistence
-  - [Vercel Postgres powered by Neon](https://vercel.com/storage/postgres) for saving chat history and user data
-  - [Vercel Blob](https://vercel.com/storage/blob) for efficient file storage
-- [NextAuth.js](https://github.com/nextauthjs/next-auth)
-  - Simple and secure authentication
+- 💬 **Real-time AI Chat**: Engage in natural conversations with an AI powered by Google's Gemini models
+- 🚀 **Built with Next.js**: Utilizing the latest Next.js features for optimal performance
+- 🔄 **Streaming Responses**: Get AI responses in real-time with streaming
+- 📱 **Responsive Design**: Works on desktop, tablet, and mobile devices
+- 🎨 **Clean UI**: Minimalist interface with a focus on user experience
+- 🌙 **Dark Mode Support**: Toggle between light and dark themes
+- 🧠 **Context Awareness**: AI maintains context throughout the conversation
 
-## Model Providers
+## Tech Stack
 
-This template ships with OpenAI `gpt-4o` as the default. However, with the [AI SDK](https://sdk.vercel.ai/docs), you can switch LLM providers to [OpenAI](https://openai.com), [Anthropic](https://anthropic.com), [Cohere](https://cohere.com/), and [many more](https://sdk.vercel.ai/providers/ai-sdk-providers) with just a few lines of code.
+- [Next.js](https://nextjs.org/) - React framework
+- [Vercel AI SDK](https://sdk.vercel.ai/docs) - Tools for building AI-powered user interfaces
+- [Gemini API](https://ai.google.dev/gemini-api) - Powers the AI chat functionality
+- [Tailwind CSS](https://tailwindcss.com/) - For styling
+- [Vercel](https://vercel.com/) - Deployment and hosting
 
-## Deploy Your Own
+## Getting Started
 
-You can deploy your own version of the Next.js AI Chatbot to Vercel with one click:
+### Prerequisites
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fai-chatbot&env=AUTH_SECRET,OPENAI_API_KEY&envDescription=Learn%20more%20about%20how%20to%20get%20the%20API%20Keys%20for%20the%20application&envLink=https%3A%2F%2Fgithub.com%2Fvercel%2Fai-chatbot%2Fblob%2Fmain%2F.env.example&demo-title=AI%20Chatbot&demo-description=An%20Open-Source%20AI%20Chatbot%20Template%20Built%20With%20Next.js%20and%20the%20AI%20SDK%20by%20Vercel.&demo-url=https%3A%2F%2Fchat.vercel.ai&stores=[{%22type%22:%22postgres%22},{%22type%22:%22blob%22}])
+- Node.js (v18 or later)
+- pnpm
+- Google AI (Gemini) API key
 
-## Running locally
+### Installation
 
-You will need to use the environment variables [defined in `.env.example`](.env.example) to run Next.js AI Chatbot. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/projects/environment-variables) for this, but a `.env` file is all that is necessary.
+1. Clone the repository:
+```bash
+git clone https://github.com/chad-f-dalrymple/nextjs-ai-chatbot-2.git
+cd nextjs-ai-chatbot-2
+```
 
-> Note: You should not commit your `.env` file or it will expose secrets that will allow others to control access to your various OpenAI and authentication provider accounts.
-
-1. Install Vercel CLI: `npm i -g vercel`
-2. Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
-3. Download your environment variables: `vercel env pull`
-
+2. Install dependencies:
 ```bash
 pnpm install
+```
+
+3. Create a `.env.local` file in the root directory with your Google AI API key:
+```
+GOOGLE_AI_API_KEY=your_api_key_here
+```
+
+4. Start the development server:
+```bash
 pnpm dev
 ```
 
-Your app template should now be running on [localhost:3000](http://localhost:3000/).
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Project Structure
+
+```
+nextjs-ai-chatbot-2/
+├── app/                  # Next.js app directory
+│   ├── api/              # API routes
+│   ├── chat/             # Chat interface
+│   └── page.tsx          # Home page
+├── components/           # React components
+│   ├── chat/             # Chat-related components
+│   └── ui/               # UI components
+├── lib/                  # Utility functions and configs
+├── public/               # Static assets
+├── styles/               # Global styles
+└── ...                   # Config files
+```
+
+## Customization
+
+### Changing the AI Model
+
+To use a different Gemini model, update the model name in the API route:
+
+```typescript
+// app/api/chat/route.ts
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
+
+export async function POST(req: Request) {
+  // ...
+  const model = genAI.getGenerativeModel({ 
+    model: "gemini-pro", // Change to your desired model.
+  });
+  
+  const response = await model.generateContentStream({
+    contents: [
+      // ...
+    ],
+  });
+  // ...
+}
+```
+
+### Styling
+
+The project uses Tailwind CSS for styling. You can customize the theme in the `tailwind.config.js` file.
+
+## Deployment
+
+This project is configured for easy deployment on Vercel:
+
+1. Push your changes to GitHub
+2. Import the repository in Vercel
+3. Set the environment variable `GOOGLE_AI_API_KEY` in the Vercel dashboard
+4. Deploy
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- [Vercel](https://vercel.com/) for the excellent deployment platform
+- [Google](https://ai.google.dev/) for providing the Gemini AI models
+- [Next.js](https://nextjs.org/) team for the amazing framework
+
+---
+
+Built with ❤️ by [Chad Dalrymple](https://github.com/chad-f-dalrymple)

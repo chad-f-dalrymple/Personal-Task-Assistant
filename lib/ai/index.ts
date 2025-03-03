@@ -5,7 +5,7 @@ import { experimental_wrapLanguageModel as wrapLanguageModel } from 'ai';
 import { customMiddleware } from './custom-middleware';
 
 const google = createGoogleGenerativeAI({
-  apiKey: 'AIzaSyB0EEovrAyAAwYx6lMTJc9V1BsPQfHQwNw',
+  apiKey: process.env.GEMINI_API_KEY,
 
 })
 

@@ -41,12 +41,14 @@ type AllowedTools =
   | 'updateDocument'
   | 'requestSuggestions'
   | 'getWeather'
-  | 'getForecast';
+  | 'getForecast'
+  | 'addToDoItem';
 
 const blocksTools: AllowedTools[] = [
   'createDocument',
   'updateDocument',
   'requestSuggestions',
+  'addToDoItem'
 ];
 
 const weatherTools: AllowedTools[] = ['getWeather', 'getForecast'];
@@ -138,6 +140,33 @@ export async function POST(request: Request) {
               );
               const weatherData = await response.json();
               return weatherData;
+            },
+          },
+          addToDoItem: {
+            description: 'Add an item to your to do list',
+            parameters: z.object({
+              title: z.string(),
+              category: z.string(),
+              priority: z.string()
+            }),
+            execute: async ({ category, priority, title }) => {
+              function capitalizeFirstLetter(val: string) {
+                return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+              }
+              const response = await fetch(
+                `https://to-do-web-d583287f951c.herokuapp.com/api/todos`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  title: title,
+                  priority: capitalizeFirstLetter(priority),
+                  category: capitalizeFirstLetter(category)
+                })
+              });
+              const toDoData = await response.json();
+              return toDoData;
             },
           },
           createDocument: {

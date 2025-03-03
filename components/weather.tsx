@@ -382,7 +382,7 @@ export function Weather({
         }
         
         {weatherAtLocation?.forecast && 
-        <div className="text-blue-50">{`Current temp: ${weatherAtLocation?.current.temp_f}`}</div>}
+        <div className="text-blue-50">{`Current temp: ${Math.round(weatherAtLocation?.current.temp_f)}`}</div>}
       </div>
         
       <div className="flex flex-row justify-between">

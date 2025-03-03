@@ -6,7 +6,7 @@ A modern AI chatbot built with Next.js, Vercel AI SDK, and Google's Gemini model
 
 ## Live Demo
 
-Check out the live demo: [Next.js AI Chatbot](https://nextjs-ai-chatbot-2.vercel.app/)
+Check out the live demo: [Next.js AI Chatbot](https://nextjs-ai-chatbot-2-6u5htpko3-chad-f-dalrymples-projects.vercel.app/)
 
 ## Features
 
